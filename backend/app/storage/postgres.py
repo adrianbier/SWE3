@@ -91,6 +91,8 @@ class PostgresCounterStorage:
         async with pool.connection() as connection:
             cursor = await connection.execute(GET_VALUE)
             row = await cursor.fetchone()
+        if row is None:
+            raise RuntimeError("Counter query returned no row")
         return int(row[0])
 
     async def increment(self) -> int:
@@ -98,6 +100,8 @@ class PostgresCounterStorage:
         async with pool.connection() as connection:
             cursor = await connection.execute(INCREMENT)
             row = await cursor.fetchone()
+        if row is None:
+            raise RuntimeError("Counter query returned no row")
         return int(row[0])
 
     def _require_pool(self) -> AsyncConnectionPool:

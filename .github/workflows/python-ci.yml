@@ -1,0 +1,30 @@
+
+name: Python CI
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  python-tests:
+    runs-on: [self-hosted, linux, x64, docker]
+
+    container:
+      image: python:3.13
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Projekt herunterladen
+        uses: actions/checkout@v4
+
+      - name: uv installieren
+        run: python -m pip install uv
+
+      - name: Python-Abhängigkeiten installieren
+        run: uv sync --frozen
+
+      - name: Python-Tests ausführen
+        run: uv run pytest
